@@ -6,68 +6,126 @@
 <title>Wealth Strategy</title>
 
 <style>
+
+/* ========= BASE ========= */
+
 body {
   margin:0;
-  font-family: Arial, sans-serif;
+  font-family: system-ui;
   background: linear-gradient(#0b1d2f,#132f4c);
   color:white;
 }
 
 .container {
-  max-width:700px;
+  max-width: 780px;
   margin:auto;
   padding:20px;
 }
 
-.card {
+.hidden{display:none;}
+
+.center{text-align:center;}
+
+.row{display:flex;gap:12px;align-items:center;}
+
+.stack{display:flex;flex-direction:column;gap:12px;}
+
+.card{
   background:rgba(255,255,255,0.05);
   border:1px solid rgba(255,255,255,0.1);
-  border-radius:16px;
-  padding:20px;
-  margin-bottom:20px;
+  border-radius:18px;
+  padding:24px;
+}
+
+input {
+  padding:14px;
+  border-radius:10px;
+  border:none;
+  width:100%;
 }
 
 button {
-  width:100%;
-  padding:16px;
-  margin:10px 0;
-  border-radius:10px;
+  padding:18px;
+  border-radius:14px;
   border:none;
   background:#0085CA;
   color:white;
-  font-size:16px;
+  font-weight:600;
   cursor:pointer;
 }
 
-button:hover { background:#0073b1; }
+button:hover{background:#0073b1;}
 
-input {
-  width:100%;
-  padding:12px;
-  margin:6px 0;
-  border-radius:8px;
-  border:none;
+.small{font-size:12px;opacity:.6;}
+.error{color:#ff6262;font-size:12px;}
+.success{color:#4fff88;font-size:14px;}
+
+.progress {
+  height:6px;
+  border-radius:100px;
+  background:rgba(255,255,255,.1);
+  overflow:hidden;
 }
 
-.center { text-align:center; }
-.small { font-size:12px; opacity:.7; }
-.error { color:red; }
+.progress-bar {
+  height:6px;
+  background:white;
+}
+
+/* ========= HERO ========= */
+
+.hero-panel{
+  background:linear-gradient(#0b1d2f,#071521);
+  border-radius:28px;
+  border:1px solid rgba(255,255,255,0.1);
+  padding:40px;
+}
+
+/* ========= BUTTON SCALE ========= */
+
+.btn-lg{
+  padding:22px;
+  font-size:18px;
+}
+
+/* ========= REVIEW ========= */
+
+.review{
+  padding:20px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,0.1);
+}
+
+/* ========= FOOTER ========= */
+
+.footer{
+  margin-top:40px;
+  border-top:1px solid rgba(255,255,255,0.1);
+  padding-top:20px;
+}
 
 </style>
 </head>
 
 <body>
 
-<div class="container" id="app"></div>
+<div id="app" class="container"></div>
 
 <script>
 
-// ===== STATE =====
+/* ================= STATE ================= */
 
-let state = {
-  step: 0,
-  reviewIndex: 0,
-  form: {
+const state = {
+  step:0,
+  reviewIndex:0,
+  answers:{
+    annualIncome:'',
+    investedSoFar:'',
+    challengingArea:'',
+    improvePlanTimeline:'',
+    livesInCanada:''
+  },
+  form:{
     firstname:'',
     lastname:'',
     phone:'',
@@ -75,16 +133,30 @@ let state = {
   },
   consented:false,
   formError:'',
-  answers:{
-    annualIncome:'',
-    investedSoFar:'',
-    challengingArea:'',
-    improvePlanTimeline:'',
-    livesInCanada:''
+  email:{
+    name:'',
+    email:'',
+    consent:false,
+    error:'',
+    success:false
   }
 };
 
-// ===== DATA =====
+/* ================= CONSTANTS ================= */
+
+const BOOKING_URL = "https://outlook.office.com/bookwithme/user/ea9522b929284ffd98a4a4fe683c082b@ig.ca?anonymous&ep=plink";
+
+const DISCLOSURE_URL = "https://www.investorsgroup.com/en/legal/disclosures";
+
+const WEBPAGE_URL = "https://www.ig.ca/en/advisor/curtis_rebeck";
+
+const TRADEMARK_URL = "https://www.investorsgroup.com/en/legal/disclosures";
+
+/* ================= CONSENT TEXT ================= */
+
+const CONSENT_TEXT = `By providing my telephone number and/or email address above, I CONSENT to IG Wealth Management using this information to contact me for marketing purposes. I can withdraw my consent at any time by following the unsubscribe instructions in any marketing emails I receive from IG Wealth Management. We are committed to keeping personal information confidential. The information collected above may be used by IG Wealth Management and shared with its affiliates to inform you on investment opportunities, provide additional financial information from time to time, and for other internal purposes.`;
+
+/* ================= REVIEWS ================= */
 
 const reviews = [
 { name:"Bennett H.", text:"I've had a great experience working with Curtis Rebeck at IG Wealth. He's knowledgeable, easy to talk to, and takes the time to understand your goals before making recommendations. Everything is explained clearly, and he stays in touch regularly." },
@@ -92,112 +164,189 @@ const reviews = [
 { name:"Brayden K.", text:"Had a great experience working with Curtis. He explained things clearly and helped me build my long-term financial plan." },
 { name:"Liron T.", text:"Curtis is very knowledgeable about investments, insurance and mortgages. I was super impressed after our consultation. He's also willing to pick up the phone and give you advice anytime you need, and for those reasons I highly recommend him for any of your financial needs!" },
 { name:"Ashton H.", text:"Great communication, showed me everything with detail before proceeding with investments. Took the time out of the day to make sure everything was going good and answering all questions I had." },
-{ name:"Michael P.", text:"Curtis has been great to work with. He is very knowledgeable, organized, and easy to reach. I've had a great experience and would definitely recommend him." }
+{ name:"Michael P.", text:"Curtis has been great to work with. He is very knowledgeable, organized, and easy to reach. I've had a great experience and would definitely recommend him." },
 ];
+
+/* ================= QUESTIONS ================= */
 
 const questions = [
-{ key:"annualIncome", title:"What is your annual household income?", options:["< $100k","$100k - $150k","$150k - $250k","$250k+"] },
-{ key:"investedSoFar", title:"How much have you invested so far?", options:["< $100k","$100k - $250k","$250k - $500k","$500k+"] },
-{ key:"challengingArea", title:"Which area feels most challenging right now?", options:["Tax efficiency","Long-term growth planning","Confidence in my overall approach","Coordinating multiple moving parts","Not sure - I just want a second opinion"] },
-{ key:"improvePlanTimeline", title:"When are you looking to improve your plan?", options:["Immediately","Within the next 3–6 months","Just exploring for now"] },
-{ key:"livesInCanada", title:"Do you currently live in Canada?", options:["Yes","No"] }
+{
+  key:"annualIncome",
+  title:"What is your annual household income?",
+  options:["< $100k","$100k - $150k","$150k - $250k","$250k+"]
+},
+{
+  key:"investedSoFar",
+  title:"How much have you invested so far?",
+  options:["< $100k","$100k - $250k","$250k - $500k","$500k+"]
+},
+{
+  key:"challengingArea",
+  title:"Which area feels most challenging right now?",
+  options:[
+    "Tax efficiency",
+    "Long-term growth planning",
+    "Confidence in my overall approach",
+    "Coordinating multiple moving parts",
+    "Not sure - I just want a second opinion"
+  ]
+},
+{
+  key:"improvePlanTimeline",
+  title:"When are you looking to improve your plan?",
+  options:["Immediately","Within the next 3–6 months","Just exploring for now"]
+},
+{
+  key:"livesInCanada",
+  title:"Do you currently live in Canada?",
+  options:["Yes","No"]
+}
 ];
 
-// ===== RENDER =====
+/* ================= RENDER ================= */
 
 function render(){
-  const app = document.getElementById("app");
-  app.innerHTML = "";
 
-  if(state.step === 0) renderStep0(app);
-  if(state.step >=1 && state.step <=5) renderQuestion(app,state.step-1);
-  if(state.step === 6) renderForm(app);
-  if(state.step === 7) renderResult(app);
+  const app = document.getElementById('app');
+  app.innerHTML='';
 
-  if(state.step === 0 || state.step === 7) renderFooter(app);
+  /* PROGRESS BAR */
+  if(state.step>0 && state.step<6){
+    let percent = (state.step/6)*100;
+    app.innerHTML += `<div class="progress"><div class="progress-bar" style="width:${percent}%"></div></div>`;
+  }
+
+  /* ROUTER */
+  if(state.step===0) renderStep0(app);
+  if(state.step>=1 && state.step<=5) renderQuestion(app,state.step-1);
+  if(state.step===6) renderForm(app);
+  if(state.step===7) renderResult(app);
+
+  if(state.step===0 || state.step===7){
+    renderFooter(app);
+  }
 }
 
-// ===== STEP 0 =====
+/* ================= STEP 0 ================= */
 
 function renderStep0(app){
 
-app.innerHTML = `
-<div class="card center">
-<h1>How Much Could You Be Losing Each Year?</h1>
-<p>Hidden inefficiencies in your strategy could be costing you thousands every year.</p>
+app.innerHTML += `
+<div class="hero-panel center">
 
-<ul>
-<li>✔ Uncover missed tax-saving opportunities</li>
-<li>✔ Ensure your investments are structured properly</li>
-<li>✔ Get a clear, optimized financial strategy</li>
-</ul>
+<div class="small">Trusted by 350+ professionals, business owners & families</div>
+
+<h1>How Much Could You Be Losing Each Year?</h1>
+
+<p style="color:#4fc3ff;">Hidden inefficiencies in your strategy could be costing you thousands every year.</p>
+
+<div class="stack center">
+
+${[
+"Uncover missed tax-saving opportunities",
+"Ensure your investments are structured properly",
+"Get a clear, optimized financial strategy"
+].map(i=>`<div>✔ ${i}</div>`).join("")}
+
+</div>
 
 <p style="color:orange;">Most people only identify these gaps after they’ve already lost money.</p>
 
-<button onclick="setStep(1)">Unlock My Wealth Opportunities</button>
+</div>
+
+<div class="card center">
+
+<button class="btn-lg" onclick="setStep(1)">
+Unlock My Wealth Opportunities
+</button>
 
 <p class="small">Takes 2 minutes to get started • No commitment required</p>
+
 </div>
-
-<div id="contact" class="card">
-<p><strong>Curtis Rebeck</strong></p>
-<p>Consultant</p>
-<p>204-981-5109</p>
-<p>curtis.rebeck@ig.ca</p>
-<p class="small">IG Wealth Management Inc.</p>
-</div>
-
-<h3>Trusted by professionals, business owners, and families across Winnipeg</h3>
-
-<div id="reviews"></div>
-
-<h3>Resources</h3>
-<div id="leadMagnets"></div>
-
-<h3>Email Updates</h3>
-<div id="emailBox"></div>
 `;
 
-renderReviews();
-renderLeadMagnets();
-renderEmailBox();
+renderContact(app);
+renderReviews(app);
+renderLeadMagnets(app);
+renderEmailBox(app);
 
 }
 
-// ===== REVIEWS =====
+/* ================= CONTACT ================= */
 
-function renderReviews(){
-  const container = document.getElementById("reviews");
-  container.innerHTML = "";
+function renderContact(app){
 
-  for(let i=0;i<2;i++){
-    let r = reviews[(state.reviewIndex+i)%reviews.length];
+app.innerHTML += `
+<div class="card row">
 
-    let div = document.createElement("div");
-    div.className="card";
-    div.innerHTML = `<strong>${r.name}</strong><p>${r.text}</p>`;
+https://images.fillout.com/orgid-709482/flowpublicid-k8tpxt55fg/widgetid-default/urPEstKdyvJmFYefFqaXGz/pasted-image-1780269414006-cdogar7g.png
 
-    container.appendChild(div);
-  }
+<div>
+<b>Curtis Rebeck</b>
+<div>Consultant</div>
+<div>204-981-5109</div>
+<div>curtis.rebeck@ig.ca</div>
+<div class="small">IG Wealth Management Inc.</div>
+<div class="small">Mutual Fund Division</div>
+</div>
 
-  state.reviewIndex = (state.reviewIndex+2)%reviews.length;
-  setTimeout(renderReviews,5000);
+</div>
+`;
+
 }
 
-// ===== QUESTIONS =====
+/* ================= REVIEWS ================= */
 
-function renderQuestion(app,index){
-  const q = questions[index];
+function renderReviews(app){
 
-  let html = `<div class="card"><h2>${q.title}</h2>`;
+app.innerHTML += `<h3>Trusted by professionals, business owners, and families across Winnipeg</h3><div id="reviews"></div>`;
 
-  q.options.forEach(opt=>{
-    html += `<button onclick="selectAnswer('${q.key}','${opt}')">${opt}</button>`;
-  });
+rotateReviews();
 
-  html += `</div>`;
+}
 
-  app.innerHTML = html;
+function rotateReviews(){
+
+const container=document.getElementById("reviews");
+if(!container) return;
+
+container.innerHTML='';
+
+for(let i=0;i<2;i++){
+  const r = reviews[(state.reviewIndex+i)%reviews.length];
+
+  let div=document.createElement('div');
+  div.className='review';
+
+  div.innerHTML = `★★★★★<p>${r.text}</p><small>${r.name}</small>`;
+
+  container.appendChild(div);
+}
+
+state.reviewIndex=(state.reviewIndex+2)%reviews.length;
+
+setTimeout(rotateReviews,5000);
+
+}
+
+/* ================= QUESTIONS ================= */
+
+function renderQuestion(app,i){
+
+let q = questions[i];
+
+app.innerHTML += `
+<div class="card center">
+
+<h2>${q.title}</h2>
+
+<p class="small">Choose the option that best matches your situation</p>
+
+${q.options.map(o=>`<button onclick="selectAnswer('${q.key}','${o}')">${o}</button>`).join("")}
+
+</div>
+`;
+
 }
 
 function selectAnswer(k,v){
@@ -206,163 +355,242 @@ function selectAnswer(k,v){
   render();
 }
 
-// ===== FORM =====
+/* ================= FORM ================= */
 
 function renderForm(app){
-app.innerHTML = `
-<div class="card">
+
+app.innerHTML += `
+<div class="card center">
 
 <h2>Unlock Your Personalized Strategy Results</h2>
+
 <p>Enter your details to access your personalized financial strategy overview.</p>
+
+<div class="stack">
 
 <input placeholder="First name" oninput="state.form.firstname=this.value">
 <input placeholder="Last name" oninput="state.form.lastname=this.value">
 <input placeholder="Phone" oninput="state.form.phone=this.value">
 <input placeholder="Email" oninput="state.form.email=this.value">
 
+</div>
+
 <label>
 <input type="checkbox" onchange="state.consented=this.checked">
-I consent to be contacted
+<span class="small">${CONSENT_TEXT}</span>
 </label>
 
-<p class="error">${state.formError}</p>
+<div class="error">${state.formError}</div>
 
 <button onclick="submitForm()">See My Personalized Strategy</button>
 
 </div>
 `;
+
 }
 
 function submitForm(){
 
-if(!state.form.firstname || !state.form.lastname || !state.form.phone || !state.form.email){
-  state.formError="Please complete all fields before continuing.";
-  return render();
+if(!state.form.firstname||!state.form.lastname||!state.form.phone||!state.form.email){
+state.formError="Please complete all fields before continuing.";
+return render();
 }
 
-if(!/^[^s@]+@[^s@]+.[^s@]+$/.test(state.form.email)){
-  state.formError="Please enter a valid email address.";
-  return render();
+if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.form.email)){
+state.formError="Please enter a valid email address.";
+return render();
 }
 
 if(!state.consented){
-  state.formError="Please provide consent to continue.";
-  return render();
+state.formError="Please provide consent to continue.";
+return render();
 }
 
 state.step=7;
 render();
+
 }
 
-// ===== RESULT =====
+/* ================= LEAD MAGNET ================= */
+
+function renderLeadMagnets(app){
+
+app.innerHTML += `<h3>Resources</h3><div id="lm"></div>`;
+
+const container=document.getElementById("lm");
+
+[
+{
+title:"Retirement Income Planning Guide",
+desc:"How to structure your income, reduce taxes, and ensure your savings last."
+},
+{
+title:"Complete Financial Organizer",
+desc:"A step-by-step system to organize your finances, assets, and important documents."
+}
+].forEach((r,i)=>{
+
+let div=document.createElement('div');
+div.className='card';
+
+div.innerHTML=`
+<b>${r.title}</b>
+<p>${r.desc}</p>
+
+<input placeholder="Name" id="lm${i}n">
+<input placeholder="Email" id="lm${i}e">
+
+<label><input type="checkbox" id="lm${i}c">Consent</label>
+
+<button onclick="downloadResource(${i})">Download</button>
+`;
+
+container.appendChild(div);
+
+});
+
+}
+
+function downloadResource(i){
+
+let n=document.getElementById(`lm${i}n`).value;
+let e=document.getElementById(`lm${i}e`).value;
+let c=document.getElementById(`lm${i}c`).checked;
+
+if(!n||!e||!c){
+alert("Please complete all fields + consent.");
+return;
+}
+
+window.open("https://images.fillout.com","_blank");
+
+}
+
+/* ================= EMAIL ================= */
+
+function renderEmailBox(app){
+
+app.innerHTML += `<h3>Email Updates</h3><div id="emailBox"></div>`;
+
+const c=document.getElementById("emailBox");
+
+c.innerHTML=`
+<div class="card">
+
+<p>Subscribe to our email list to gain insights and stay up to date on markets.</p>
+
+<input placeholder="Name" oninput="state.email.name=this.value">
+<input placeholder="Email" oninput="state.email.email=this.value">
+
+<label><input type="checkbox" onchange="state.email.consent=this.checked">${CONSENT_TEXT}</label>
+
+<div class="error">${state.email.error}</div>
+
+<button onclick="subscribe()">Subscribe</button>
+
+<div class="success">${state.email.success?"✅ You're subscribed!":""}</div>
+
+</div>
+`;
+
+}
+
+function subscribe(){
+
+if(!state.email.name){
+state.email.error="Please enter your name.";
+return render();
+}
+
+if(!state.email.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)){
+state.email.error="Please enter a valid email.";
+return render();
+}
+
+if(!state.email.consent){
+state.email.error="Please provide consent.";
+return render();
+}
+
+state.email.success=true;
+state.email.error="";
+render();
+
+}
+
+/* ================= RESULT ================= */
 
 function renderResult(app){
 
-app.innerHTML = `
+app.innerHTML += `
 <div class="card center">
 
 <h2>You’re likely leaving money on the table</h2>
 
-<ul>
-<li>Paying more tax than necessary</li>
-<li>Investments not structured efficiently</li>
-<li>Gaps in long-term strategy</li>
-</ul>
+<p>Here’s where your strategy may be falling short:</p>
 
-<a href="https://outlook.office.com/bookwithme/user/ea9522b929284ffd98a4a4fe683c082b@ig.ca"ook My Free Strategy Call</button>
-</a>
+<div class="stack">
 
-<p class="small">Get a personalized plan based on your answers</p>
+<div>Paying more tax than necessary</div>
+<div>Investments not structured efficiently</div>
+<div>Gaps in long-term strategy</div>
 
 </div>
-`;
-}
 
-// ===== LEAD MAGNET =====
-
-function renderLeadMagnets(){
-
-const container = document.getElementById("leadMagnets");
-
-["Retirement Guide","Financial Organizer"].forEach(id=>{
-let div=document.createElement("div");
-div.className="card";
-
-div.innerHTML = `
-<p>${id}</p>
-<input placeholder="Name" id="${id}-n">
-<input placeholder="Email" id="${id}-e">
-<label><input type="checkbox" id="${id}-c"> Consent</label>
-<button onclick="download('${id}')">Download</button>
-`;
-
-container.appendChild(div);
-});
-}
-
-function download(id){
-let n=document.getElementById(id+"-n").value;
-let e=document.getElementById(id+"-e").value;
-let c=document.getElementById(id+"-c").checked;
-
-if(!n||!e||!c) return alert("Complete fields");
-
-window.open("https://images.fillout.com","_blank");
-}
-
-// ===== EMAIL =====
-
-function renderEmailBox(){
-const c = document.getElementById("emailBox");
-
-c.innerHTML = `
 <div class="card">
 
-<input id="subn" placeholder="Name">
-<input id="sube" placeholder="Email">
-<label><input id="subc" type="checkbox"> Consent</label>
+<p>Preview of your personalized breakdown:</p>
 
-<button onclick="subscribe()">Subscribe</button>
+<ul style="filter:blur(3px)">
+<li>Where improvements may be possible</li>
+<li>Strategies that could enhance efficiency</li>
+<li>Ways to strengthen your long-term plan</li>
+</ul>
 
-<p id="msg"></p>
+<p style="color:orange;">Full breakdown shared on your strategy call</p>
+
+</div>
+
+${BOOKING_URL}
+<button class="btn-lg">Book My Free Strategy Call</button>
+</a>
+
+<p class="small">Get a personalized plan based on your answers on a quick call</p>
 
 </div>
 `;
+
 }
 
-function subscribe(){
-let n=document.getElementById("subn").value;
-let e=document.getElementById("sube").value;
-let c=document.getElementById("subc").checked;
-
-if(!n||!e||!c){
-  document.getElementById("msg").innerText="Error";
-  return;
-}
-
-document.getElementById("msg").innerText="✅ You're subscribed!";
-}
-
-// ===== FOOTER =====
+/* ================= FOOTER ================= */
 
 function renderFooter(app){
 
 app.innerHTML += `
-<div class="center small">
+<div class="footer center small">
+
+<p>This Site is provided for general informational purposes only and does not constitute personalized or specific advice.</p>
+
 <p>IG Wealth Management Inc. Mutual Fund Division</p>
 
-<a href="https://www.investorsgroup.com/en/legal/disclosures" target
-<a href="https://www.investorsgroup.com/en/legal/disclosures" target="_ref="https://www.ig.ca/en/advisor/curtis_rebeck" target="_`;
+${DISCLOSURE_URL}Disclosures</a> |
+${TRADEMARK_URL}Trademark</a> |
+${WEBPAGE_URL}Webpage</a>
+
+</div>
+`;
+
 }
 
-// ===== CONTROL =====
+/* ================= CONTROL ================= */
 
 function setStep(s){
 state.step=s;
 render();
 }
 
-// ===== INIT =====
+/* ================= INIT ================= */
+
 render();
 
 </script>
