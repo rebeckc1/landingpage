@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Custom Wealth Plan</title>
+
+<style>
+body {
+font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+background: #0b0b0d;
+color: white;
+text-align: center;
+padding: 20px;
+}
+
+.container {
+max-width: 520px;
+margin: auto;
+}
+
+h1 {
+font-size: 28px;
+margin-bottom: 10px;
+}
+
+h2 {
+margin-bottom: 20px;
+}
+
+p {
+color: #bbb;
+font-size: 15px;
+}
+
+.btn {
+display: block;
+background: white;
+color: black;
+padding: 14px;
+margin: 10px 0;
+border-radius: 10px;
+cursor: pointer;
+font-weight: 600;
+}
+
+.btn:hover {
+background: #e6e6e6;
+}
+
+.profile {
+width: 80px;
+height: 80px;
+border-radius: 50%;
+margin-bottom: 10px;
+object-fit: cover;
+}
+
+.hidden {
+display: none;
+}
+
+.trust {
+font-size: 13px;
+color: #888;
+margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div id="step1">
+<img src="https://www.ig.ca/-/media/ig/images/advisor-profile/curtis-rebeck.jpg" class="profile">
+<h1>Get Your Custom Wealth Plan</h1>
+<p>Answer a few quick questions to see how to reduce taxes, grow your investments, and retire earlier.</p>
+
+<div class="btn" onclick="nextStep(2)">Start</div>
+
+<p class="trust">Trusted by 350+ high-income earners</p>
+</div>
+
+<div id="step2" class="hidden">
+<h2>Your Income?</h2>
+<div class="btn" onclick="nextStep(3)">$100–150K</div>
+<div class="btn" onclick="nextStep(3)">$150–250K</div>
+<div class="btn" onclick="nextStep(3)">$250K+</div>
+</div>
+
+<div id="step3" class="hidden">
+<h2>Invested Assets?</h2>
+<div class="btn" onclick="nextStep(4)">Under $100K</div>
+<div class="btn" onclick="nextStep(4)">$100K–500K</div>
+<div class="btn" onclick="nextStep(4)">$500K+</div>
+</div>
+
+<div id="step4" class="hidden">
+<h2>Main Priority?</h2>
+<div class="btn" onclick="nextStep(5)">Reduce taxes</div>
+<div class="btn" onclick="nextStep(5)">Grow investments</div>
+<div class="btn" onclick="nextStep(5)">Retire earlier</div>
+</div>
+
+<div id="step5" class="hidden">
+<h2>Your Plan is Ready</h2>
+
+<p>
+Based on your answers, you may be losing money in:<br><br>
+✅ Tax efficiency<br>
+✅ Investment structure<br>
+✅ Long-term planning
+</p>
+
+<p>Book a quick call to walk through your custom plan:</p>
+
+<a href="https://outlook.office.com/bookwithme/user/ea9522b929284ffd98a4a4fe683c082b@ig.ca" target="_blank">
+<div class="btn">Book Your Call</div>
+</a>
+
+<p class="trust">Financial Planner, IG Wealth Management Inc.</p>
+</div>
+
+</div>
+
+<script>
+function nextStep(step) {
+document.querySelectorAll('.container > div').forEach(div => div.classList.add('hidden'));
+document.getElementById('step' + step).classList.remove('hidden');
+}
+</script>
+
+</body>
+</html>
+``
