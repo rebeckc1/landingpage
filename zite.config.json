@@ -1,0 +1,16 @@
+{
+  "accessMode": "external",
+  "seoSettings": {
+    "title": "",
+    "faviconUrl": "https://images.fillout.com/orgid-709482/flowpublicid-k8tpxt55fg/widgetid-default/w9coemdzqEcjBJszYTmw42/IG-Wealth-Logo.jpeg",
+    "description": "",
+    "thumbnailUrl": "https://images.fillout.com/orgid-709482/flowpublicid-k8tpxt55fg/widgetid-default/4sPJssUoojLV7EvYYmM7JE/IG-logo-Dark_blue-EN.png"
+  },
+  "integrations": {
+    "lead-magnet-responses": {
+      "type": "databases",
+      "connectionId": null,
+      "base": "LeadMagnetResponses"
+    }
+  }
+}
