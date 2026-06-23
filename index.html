@@ -405,6 +405,60 @@
     box-shadow: 0 8px 24px rgba(0,133,202,0.45);
   }
 
+  /* ── VIDEO PLACEHOLDER ── */
+  .video-placeholder {
+    width: 100%;
+    max-width: 150px;
+    aspect-ratio: 9 / 16;
+    margin: 0 auto 14px;
+    border-radius: 12px;
+    background: linear-gradient(160deg, #0d2438 0%, #061320 100%);
+    border: 1px solid rgba(79,195,255,0.20);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .play-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(0,133,202,0.25);
+    border: 2px solid rgba(79,195,255,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: var(--accent-lt);
+    padding-left: 2px;
+  }
+  .video-placeholder-text {
+    font-size: 10px;
+    color: rgba(255,255,255,0.40);
+    text-align: center;
+    line-height: 1.4;
+    padding: 0 8px;
+  }
+  /* When ready, replace .video-placeholder with a YouTube embed using the JS API
+     (not a plain iframe) so we can detect play/pause and suppress the exit-intent
+     popup while the video is actively playing. Use this structure:
+
+     <div class="video-embed" id="intro-video-embed"></div>
+
+     Then in JS, load the YouTube IFrame API and create the player with:
+       events: {
+         onStateChange: (e) => {
+           // YT.PlayerState.PLAYING === 1, PAUSED === 2, ENDED === 0
+           videoPlaying = (e.data === 1);
+           if (window.__resetExitIdleTimer) window.__resetExitIdleTimer();
+         }
+       }
+
+     CSS: .video-embed { width:100%; max-width:150px; aspect-ratio:9/16; margin:0 auto 14px; border-radius:12px; overflow:hidden; }
+          .video-embed iframe { width:100%; height:100%; border:none; }
+  */
+
   .badge {
     display: inline-block;
     background: rgba(0,133,202,0.20);
@@ -1191,10 +1245,6 @@ function renderHome() {
   return `<div class="step">
     <div class="hero-glow">
       <div class="hero-panel">
-        <div class="video-placeholder">
-          <div class="play-icon">▶</div>
-          <p class="video-placeholder-text">60-second intro video<br/>coming soon</p>
-        </div>
         <h1>How Much Could You Be Losing Each Year?</h1>
         <p class="hook">Hidden inefficiencies in your strategy could be costing you thousands every year.</p>
       </div>
@@ -1672,32 +1722,36 @@ function initStickyCTA() {
 
 /* ─────────────── EXIT INTENT ─────────────── */
 let exitShown = false;
+let videoPlaying = false; // set to true by the video embed's onplay/onpause handlers once the real video is added
+
 function initExitIntent() {
   // Desktop: mouse leaves top of page
   document.addEventListener('mouseleave', (e) => {
-    if (e.clientY < 10 && !exitShown && step === 0) {
+    if (e.clientY < 10 && !exitShown && step === 0 && !videoPlaying) {
       showExit();
     }
   });
-  // Mobile: back button / visibility change after 8 seconds
-  let mobileTimer;
+  // Mobile: back button / visibility change
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden && !exitShown && step === 0) {
+    if (document.hidden && !exitShown && step === 0 && !videoPlaying) {
       showExit();
     }
   });
-  // Mobile: idle for 150 seconds with no interaction
+  // Mobile: idle for 75 seconds with no interaction (skipped entirely while video is playing)
   let idleTimer = setTimeout(() => {
-    if (!exitShown && step === 0) showExit();
-  }, 45000);
+    if (!exitShown && step === 0 && !videoPlaying) showExit();
+  }, 75000);
+  const resetIdle = () => {
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => {
+      if (!exitShown && step === 0 && !videoPlaying) showExit();
+    }, 75000);
+  };
   ['touchstart','scroll','click'].forEach(evt => {
-    document.addEventListener(evt, () => {
-      clearTimeout(idleTimer);
-      idleTimer = setTimeout(() => {
-        if (!exitShown && step === 0) showExit();
-      }, 45000);
-    }, { passive: true });
+    document.addEventListener(evt, resetIdle, { passive: true });
   });
+  // Expose resetIdle so the video embed can call it on play/pause/end
+  window.__resetExitIdleTimer = resetIdle;
 }
 
 function showExit() {
@@ -1740,27 +1794,11 @@ window.addEventListener('pagehide', trackDropOff);
 render();
 setScarcityText();
 initStickyCTA();
-initExitIntent();
+// initExitIntent(); // disabled in this temporary version
 </script>
 <!-- ── STICKY MOBILE CTA ── -->
 <div id="sticky-cta">
   <button onclick="goStep(1)">📅 Book My Free Strategy Call</button>
-</div>
-
-<!-- ── EXIT INTENT OVERLAY ── -->
-<div id="exit-overlay">
-  <div class="exit-modal">
-    <button class="exit-close" onclick="closeExit()">✕</button>
-    <div style="font-size:36px;margin-bottom:12px;">⚠️</div>
-    <h3>Wait, Don't Leave Empty-Handed</h3>
-    <p>Most Canadians don't realize how much they're losing each year to inefficient tax strategies and poorly structured investments.<br/><br/>It only takes <strong>2 minutes</strong> to find out where you stand. The insight could be worth thousands.</p>
-    <div class="scarcity-bar" style="margin-bottom:20px;">
-      <div class="scarcity-dot"></div>
-      <span id="exit-scarcity-text"></span>
-    </div>
-    <button class="btn-primary" onclick="closeExit(); goStep(1);">Show Me What I'm Missing</button>
-    <span class="exit-dismiss" onclick="closeExit()">No thanks, I'll leave without finding out</span>
-  </div>
 </div>
 
 </body>
