@@ -816,9 +816,32 @@
     padding: 24px;
     text-align: center;
   }
-  .locked-hint { font-size: 13px; color: rgba(255,255,255,0.60); margin-bottom: 12px; }
-  .locked-list { font-size: 13px; color: rgba(255,255,255,0.70); line-height: 1.9; filter: blur(4px); user-select: none; }
-  .locked-cta { font-size: 13px; color: var(--amber); margin-top: 14px; }
+  .locked-hint { font-size: 13px; color: rgba(255,255,255,0.60); margin-bottom: 14px; }
+  .breakdown-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 4px; }
+  .breakdown-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.5;
+  }
+  .breakdown-item .check {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(0,133,202,0.20);
+    color: var(--accent-lt);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    margin-top: 1px;
+  }
+  .locked-cta { font-size: 13px; color: var(--amber); margin-top: 16px; }
 
   .book-wrap { text-align: center; margin-bottom: 28px; }
   .book-btn {
@@ -1094,8 +1117,8 @@ const REVIEWS = [
 ];
 
 const QUESTIONS = [
-  { title: "What is your annual household income?",         key: "annualIncome",        options: ["< $100k","$100k – $150k","$150k – $250k","$250k+"] },
-  { title: "How much have you invested so far?",           key: "investedSoFar",       options: ["< $100k","$100k – $250k","$250k – $500k","$500k+"] },
+  { title: "What is your annual household income?",         key: "annualIncome",        options: ["< $150k","$150k – $300k","$300k – $500k","$500k+"] },
+  { title: "How much have you invested so far?",           key: "investedSoFar",       options: ["< $300k","$300k – $500k","$500k – $1M","$1M+"] },
   { title: "Which area feels most challenging right now?", key: "challengingArea",     options: ["Tax efficiency","Long-term growth planning","Confidence in my overall approach","Coordinating multiple moving parts","Not sure, I just want a second opinion"] },
   { title: "When are you looking to improve your plan?",   key: "improvePlanTimeline", options: ["Immediately","Within the next 3–6 months","Just exploring for now"] },
   { title: "Are you currently working with an advisor?",   key: "hasAdvisor",          options: ["Yes","No"], conditional: true },
@@ -1438,9 +1461,13 @@ function renderResults() {
     </div>
 
     <div class="locked-box">
-      <p class="locked-hint">Here's a preview of your personalized breakdown:</p>
-      <div class="locked-list">Where improvements may be possible<br/>Strategies that could enhance efficiency<br/>Ways to strengthen your long-term plan</div>
-      <p class="locked-cta">We'll walk you through your full breakdown on your strategy call so you can see exactly where to improve.</p>
+      <p class="locked-hint">Here's what we'll cover on your call:</p>
+      <div class="breakdown-list">
+        <div class="breakdown-item"><span class="check">✓</span><span>Where you may be overpaying in tax, and what to do about it</span></div>
+        <div class="breakdown-item"><span class="check">✓</span><span>Whether your investments are actually working for you</span></div>
+        <div class="breakdown-item"><span class="check">✓</span><span>The gaps in your plan that most people don't catch until it's too late</span></div>
+      </div>
+      <p class="locked-cta">This is just the starting point. On your call, we'll go deeper into your specific numbers and build a real plan together.</p>
     </div>
 
     ${bookingSection}
