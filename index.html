@@ -379,14 +379,74 @@
   .hero-panel {
     position: relative;
     z-index: 1;
-    background: linear-gradient(180deg, var(--bg-deep) 0%, #071521 100%);
-    border: 1px solid var(--border);
+    background:
+      radial-gradient(circle at 15% 0%, rgba(0,133,202,0.18) 0%, transparent 45%),
+      radial-gradient(circle at 85% 100%, rgba(79,195,255,0.12) 0%, transparent 50%),
+      linear-gradient(180deg, var(--bg-deep) 0%, #071521 100%);
+    border: 1px solid rgba(79,195,255,0.18);
     border-radius: 24px;
-    padding: 44px 36px;
+    padding: 40px 32px 36px;
     margin-bottom: 20px;
     text-align: center;
+    overflow: hidden;
   }
-  @media (max-width: 480px) { .hero-panel { padding: 32px 20px; } }
+  @media (max-width: 480px) { .hero-panel { padding: 32px 22px 28px; } }
+
+  .hero-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-hov));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    margin: 0 auto 18px;
+    box-shadow: 0 8px 24px rgba(0,133,202,0.45);
+  }
+
+  /* ── VIDEO PLACEHOLDER ── */
+  .video-placeholder {
+    width: 100%;
+    max-width: 150px;
+    aspect-ratio: 9 / 16;
+    margin: 0 auto 14px;
+    border-radius: 12px;
+    background: linear-gradient(160deg, #0d2438 0%, #061320 100%);
+    border: 1px solid rgba(79,195,255,0.20);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .play-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(0,133,202,0.25);
+    border: 2px solid rgba(79,195,255,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: var(--accent-lt);
+    padding-left: 2px;
+  }
+  .video-placeholder-text {
+    font-size: 10px;
+    color: rgba(255,255,255,0.40);
+    text-align: center;
+    line-height: 1.4;
+    padding: 0 8px;
+  }
+  /* When ready, replace .video-placeholder with:
+     <div class="video-embed">
+       <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="Intro video" allowfullscreen></iframe>
+     </div>
+     and add: .video-embed { width:100%; max-width:360px; aspect-ratio:9/16; margin:0 auto 20px; border-radius:16px; overflow:hidden; }
+     .video-embed iframe { width:100%; height:100%; border:none; }
+  */
 
   .badge {
     display: inline-block;
@@ -400,20 +460,20 @@
   }
 
   h1 {
-    font-size: clamp(30px, 6vw, 48px);
+    font-size: clamp(28px, 6vw, 44px);
     font-weight: 700;
-    line-height: 1.1;
+    line-height: 1.12;
     letter-spacing: -0.5px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
 
   .hook {
     color: var(--accent-lt);
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 500;
-    margin-bottom: 28px;
+    margin-bottom: 4px;
     line-height: 1.4;
-    max-width: 560px;
+    max-width: 480px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -709,15 +769,32 @@
   /* ── RESULTS STEP ── */
   .result-h2 { font-size: clamp(20px, 4.5vw, 28px); font-weight: 700; margin-bottom: 10px; }
   .result-sub { font-size: 17px; color: rgba(255,255,255,0.60); max-width: 400px; margin: 0 auto 24px; }
-  .result-items { max-width: 360px; margin: 0 auto 28px; display: flex; flex-direction: column; gap: 10px; }
+  .result-items { max-width: 380px; margin: 0 auto 28px; display: flex; flex-direction: column; gap: 12px; }
   .result-item {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: linear-gradient(135deg, rgba(251,191,36,0.07), rgba(255,255,255,0.04));
+    border: 1px solid rgba(251,191,36,0.18);
+    border-left: 3px solid var(--amber);
+    border-radius: 12px;
+    padding: 16px 18px;
     font-size: 14px;
-    color: rgba(255,255,255,0.90);
-    text-align: center;
+    font-weight: 500;
+    color: rgba(255,255,255,0.92);
+    text-align: left;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+  }
+  .result-item .result-icon {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 9px;
+    background: rgba(251,191,36,0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
   }
   .locked-box {
     max-width: 420px;
@@ -965,12 +1042,12 @@ src="https://www.facebook.com/tr?id=1010931028580574&ev=PageView&noscript=1"
   <input type="text" name="Invested So Far" />
   <input type="text" name="Challenging Area" />
   <input type="text" name="Timeline" />
+  <input type="text" name="Has Advisor" />
+  <input type="text" name="Reason for Change" />
   <input type="text" name="Lives in Canada" />
   <input type="text" name="Summary" />
 </form>
 <form name="resource-download" netlify netlify-honeypot="bot-field" hidden>
-  <input type="text" name="Name" />
-  <input type="text" name="Phone" />
   <input type="email" name="Email" />
   <input type="text" name="Resource" />
 </form>
@@ -1008,8 +1085,9 @@ const REVIEWS = [
 const QUESTIONS = [
   { title: "What is your annual household income?",         key: "annualIncome",        options: ["< $100k","$100k – $150k","$150k – $250k","$250k+"] },
   { title: "How much have you invested so far?",           key: "investedSoFar",       options: ["< $100k","$100k – $250k","$250k – $500k","$500k+"] },
-  { title: "Which area feels most challenging right now?", key: "challengingArea",     options: ["Tax efficiency","Long-term growth planning","Confidence in my overall approach","Coordinating multiple moving parts","Not sure – I just want a second opinion"] },
+  { title: "Which area feels most challenging right now?", key: "challengingArea",     options: ["Tax efficiency","Long-term growth planning","Confidence in my overall approach","Coordinating multiple moving parts","Not sure, I just want a second opinion"] },
   { title: "When are you looking to improve your plan?",   key: "improvePlanTimeline", options: ["Immediately","Within the next 3–6 months","Just exploring for now"] },
+  { title: "Are you currently working with an advisor?",   key: "hasAdvisor",          options: ["Yes","No"], conditional: true },
   { title: "Do you currently live in Canada?",             key: "livesInCanada",       options: ["Yes","No"] },
 ];
 
@@ -1085,16 +1163,14 @@ function leadMagnetHTML(r) {
       <div class="lead-body">
         <p class="lead-title">${esc(r.title)}</p>
         <p class="lead-desc">${esc(r.desc)}</p>
-        <input class="input-full" id="${r.id}-name"  placeholder="Name" type="text" autocomplete="off" />
-        <input class="input-full" id="${r.id}-phone" placeholder="Phone" type="tel" autocomplete="off" />
         <div class="input-row">
           <input class="input-sm" id="${r.id}-email" placeholder="Email" type="email" autocomplete="off" />
           <button class="btn-sm" onclick="downloadResource('${r.id}','${r.pdf}','${esc(r.title)}')">Download</button>
         </div>
         <p class="err" id="${r.id}-err"></p>
+        <p style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:8px;line-height:1.5;">By downloading, you consent to receive occasional emails from IG Wealth Management. Unsubscribe anytime.</p>
       </div>
     </div>
-    ${consentHTML(r.id+'-consent')}
   </div>`;
 }
 
@@ -1120,10 +1196,10 @@ function render() {
   const pb   = document.getElementById('progress-bar');
 
   // Progress bar
-  if (step > 0 && step < 6) {
+  if (step > 0 && step < 7) {
     pw.style.display = 'block';
-    pb.style.width = `${(step / 6) * 100}%`;
-    pw.setAttribute('data-label', `Step ${step} of 5`);
+    pb.style.width = `${(step / 7) * 100}%`;
+    pw.setAttribute('data-label', `Step ${step} of 6`);
   } else {
     pw.style.display = 'none';
   }
@@ -1134,10 +1210,10 @@ function render() {
     setTimeout(setScarcityText, 0); // refresh after DOM update
     const sticky = document.getElementById('sticky-cta');
     if (sticky) sticky.style.display = 'none';
-  } else if (step >= 1 && step <= 5) {
+  } else if (step >= 1 && step <= 6) {
     view.innerHTML = renderQuestion(step - 1);
     stopReviewTimer();
-  } else if (step === 6) {
+  } else if (step === 7) {
     view.innerHTML = renderForm();
     stopReviewTimer();
     // Restore form values
@@ -1147,11 +1223,8 @@ function render() {
     });
     const cb = document.getElementById('f-consent');
     if (cb) cb.checked = consented;
-  } else if (step === 7) {
+  } else if (step === 8) {
     view.innerHTML = renderResults();
-    // Set scarcity text on results page
-    const rsc = document.getElementById('results-scarcity');
-    if (rsc) rsc.textContent = `Only ${SPOTS} free strategy call spot${SPOTS === 1 ? '' : 's'} remaining this week`;
   }
 }
 
@@ -1161,23 +1234,13 @@ function renderHome() {
   return `<div class="step">
     <div class="hero-glow">
       <div class="hero-panel">
-        <div class="badge">Trusted by 350+ professionals, business owners &amp; families</div>
+        <div class="video-placeholder">
+          <div class="play-icon">▶</div>
+          <p class="video-placeholder-text">60-second intro video<br/>coming soon</p>
+        </div>
         <h1>How Much Could You Be Losing Each Year?</h1>
         <p class="hook">Hidden inefficiencies in your strategy could be costing you thousands every year.</p>
-        <div class="benefits">
-          ${["Uncover missed tax-saving opportunities","Ensure your investments are structured properly","Get a clear, optimized financial strategy"].map(b=>`
-            <div class="benefit-row">
-              <div class="check-circle">✓</div>
-              <span>${esc(b)}</span>
-            </div>`).join('')}
-        </div>
-        <p class="tension">Most people only identify these gaps after they've already lost money.</p>
       </div>
-    </div>
-
-    <div class="scarcity-bar">
-      <div class="scarcity-dot"></div>
-      <span id="scarcity-text"></span>
     </div>
 
     <div class="cta-zone">
@@ -1209,31 +1272,76 @@ function renderHome() {
       </div>
     </div>
 
-    <p class="sub-note" style="color:#ffffff;">Not ready yet? Start with these free resources:</p>
-    <div class="lower-resources">
-      <div class="resources-gap">
-        ${RESOURCES.map(r => leadMagnetHTML(r)).join('')}
-      </div>
-    </div>
-
-    <p class="sub-label">Subscribe to our email list to stay informed</p>
-    ${emailBoxHTML()}
-
     ${footerHTML()}
   </div>`;
 }
 
 function renderQuestion(qi) {
   const q = QUESTIONS[qi];
+
+  // Track per-question views for drop-off analysis
+  if (typeof gtag !== 'undefined') gtag('event', 'quiz_question_viewed', {event_category: 'Funnel', event_label: `Q${qi+1}: ${q.title}`, question_number: qi+1});
+  if (typeof fbq !== 'undefined') fbq('trackCustom', 'QuizQuestionViewed', {question_number: qi+1, question_title: q.title});
+
+  if (q.conditional) {
+    return `<div class="step">
+      <h2 class="q-title">${esc(q.title)}</h2>
+      <p class="q-sub">Choose the option that best matches your situation</p>
+      <div class="options" id="opts-${qi}">
+        ${q.options.map((opt, oi) => `
+          <button class="option-btn" id="opt-${qi}-${oi}" onclick="selectAdvisorAnswer('${esc(opt)}', ${qi+2}, ${qi}, ${oi})">${esc(opt)}</button>
+        `).join('')}
+      </div>
+      <div id="advisor-followup" style="display:none;margin-top:20px;text-align:left;">
+        <label style="font-size:13px;color:rgba(255,255,255,0.65);display:block;margin-bottom:8px;">If yes, what's prompting the change? <span style="color:rgba(255,255,255,0.35);font-weight:400;">(optional)</span></label>
+        <textarea id="advisor-followup-text" rows="3"
+          style="width:100%;padding:12px 14px;border-radius:10px;border:1px solid transparent;background:#fff;color:var(--bg-deep);font-size:14px;font-family:var(--font-body);resize:vertical;outline:none;box-shadow:inset 0 1px 3px rgba(0,0,0,0.12);"
+          placeholder="e.g. lack of communication, want a second opinion, fees, etc."></textarea>
+        <div style="display:flex;gap:12px;align-items:center;margin-top:12px;">
+          <button class="btn-white" style="flex:1;" onclick="continueAfterAdvisor(${qi+2})">Continue</button>
+          <span onclick="continueAfterAdvisor(${qi+2})" style="font-size:13px;color:rgba(255,255,255,0.45);cursor:pointer;text-decoration:underline;white-space:nowrap;">Skip</span>
+        </div>
+      </div>
+    </div>`;
+  }
+
   return `<div class="step">
     <h2 class="q-title">${esc(q.title)}</h2>
     <p class="q-sub">Choose the option that best matches your situation</p>
-    <div class="options">
-      ${q.options.map(opt => `
-        <button class="option-btn" onclick="selectAnswer('${esc(q.key)}','${esc(opt)}',${qi+2})">${esc(opt)}</button>
+    <div class="options" id="opts-${qi}">
+      ${q.options.map((opt, oi) => `
+        <button class="option-btn" id="opt-${qi}-${oi}" onclick="selectAnswer('${esc(q.key)}','${esc(opt)}',${qi+2}, ${qi}, ${oi})">${esc(opt)}</button>
       `).join('')}
     </div>
   </div>`;
+}
+
+function flashSelected(qi, oi) {
+  const btn = document.getElementById(`opt-${qi}-${oi}`);
+  if (btn) {
+    btn.style.background = 'var(--accent)';
+    btn.style.color = '#fff';
+    btn.style.borderColor = 'var(--accent)';
+  }
+}
+
+function selectAdvisorAnswer(value, next, qi, oi) {
+  if (qi !== undefined) flashSelected(qi, oi);
+  answers.hasAdvisor = value;
+  if (value === 'Yes') {
+    // Reveal the follow-up textarea instead of advancing immediately
+    const followup = document.getElementById('advisor-followup');
+    if (followup) followup.style.display = 'block';
+  } else {
+    answers.advisorChangeReason = '';
+    setTimeout(() => goStep(next), 150);
+  }
+}
+
+function continueAfterAdvisor(next) {
+  const text = document.getElementById('advisor-followup-text')?.value.trim() || '';
+  answers.advisorChangeReason = text;
+  goStep(next);
 }
 
 function renderForm() {
@@ -1267,7 +1375,7 @@ function renderResults() {
     <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:24px;margin-bottom:24px;text-align:center;">
       <p style="font-size:20px;font-weight:700;margin-bottom:8px;">Stay Ahead of the Curve</p>
       <p style="font-size:14px;color:rgba(255,255,255,0.65);margin-bottom:20px;line-height:1.6;">
-        When you're ready to take a closer look, I'll be here. In the meantime, subscribe to get insights on tax strategies, investing tips, and financial planning for Canadians — straight to your inbox.
+        When you're ready to take a closer look, I'll be here. In the meantime, subscribe to get insights on tax strategies, investing tips, and financial planning for Canadians, straight to your inbox.
       </p>
       <div style="display:flex;flex-direction:column;gap:10px;max-width:360px;margin:0 auto;">
         <input class="input-lg" id="exp-name"  placeholder="Name"  type="text"  style="height:46px;" />
@@ -1283,14 +1391,9 @@ function renderResults() {
     </div>
   ` : `
     <!-- READY: push to booking -->
-    <div class="scarcity-bar" style="margin-bottom:16px;">
-      <div class="scarcity-dot"></div>
-      <span id="results-scarcity"></span>
-    </div>
-
     <div style="text-align:center;margin-bottom:16px;">
       <p style="font-size:18px;font-weight:700;margin-bottom:6px;">Book Your Free 15-Minute Strategy Call</p>
-      <p class="book-note">Click below to pick a time that works — spots fill up fast</p>
+      <p class="book-note">Click below to pick a time that works for you</p>
     </div>
 
     <div style="text-align:center;margin-bottom:12px;">
@@ -1315,8 +1418,15 @@ function renderResults() {
     </div>
 
     <div class="result-items">
-      ${["Paying more tax than necessary","Investments not structured efficiently","Gaps in long-term strategy"].map(i=>`
-        <div class="result-item">${esc(i)}</div>
+      ${[
+        {icon:"💸", text:"Paying more tax than necessary"},
+        {icon:"📉", text:"Investments not structured efficiently"},
+        {icon:"⚠️", text:"Gaps in long-term strategy"}
+      ].map(i=>`
+        <div class="result-item">
+          <div class="result-icon">${i.icon}</div>
+          <span>${esc(i.text)}</span>
+        </div>
       `).join('')}
     </div>
 
@@ -1369,23 +1479,24 @@ function goStep(n) {
   // Fire Facebook Pixel events at key funnel moments
   if (typeof fbq !== 'undefined') {
     if (n === 1) fbq('track', 'InitiateCheckout', {content_name: 'Quiz Started'});
-    if (n === 6) fbq('track', 'AddToCart',        {content_name: 'Quiz Completed'});
-    if (n === 7) fbq('track', 'Lead',              {content_name: 'Contact Form Submitted'});
+    if (n === 7) fbq('track', 'AddToCart',        {content_name: 'Quiz Completed'});
+    if (n === 8) fbq('track', 'Lead',              {content_name: 'Contact Form Submitted'});
   }
   // Fire Google Analytics events
   if (typeof gtag !== 'undefined') {
     if (n === 1) gtag('event', 'quiz_started',            {event_category: 'Funnel'});
-    if (n === 6) gtag('event', 'quiz_completed',          {event_category: 'Funnel'});
-    if (n === 7) gtag('event', 'generate_lead',           {event_category: 'Funnel'});
+    if (n === 7) gtag('event', 'quiz_completed',          {event_category: 'Funnel'});
+    if (n === 8) gtag('event', 'generate_lead',           {event_category: 'Funnel'});
   }
   step = n;
   window.scrollTo({ top: 0, behavior: 'smooth' });
   render();
 }
 
-function selectAnswer(key, value, next) {
+function selectAnswer(key, value, next, qi, oi) {
+  if (qi !== undefined) flashSelected(qi, oi);
   answers[key] = value;
-  goStep(next);
+  setTimeout(() => goStep(next), 150);
 }
 
 function syncForm(key, val) {
@@ -1420,6 +1531,8 @@ function handleContinue() {
     'Invested So Far: '   + (answers.investedSoFar       || 'Not answered'),
     'Challenging Area: '  + (answers.challengingArea     || 'Not answered'),
     'Timeline: '          + (answers.improvePlanTimeline || 'Not answered'),
+    'Has Advisor: '       + (answers.hasAdvisor          || 'Not answered'),
+    'Reason for Change: ' + (answers.advisorChangeReason || 'N/A'),
     'Lives in Canada: '   + (answers.livesInCanada       || 'Not answered'),
   ].join(' | ');
 
@@ -1433,6 +1546,8 @@ function handleContinue() {
     'Invested So Far'  :   answers.investedSoFar      || '',
     'Challenging Area'  :  answers.challengingArea    || '',
     'Timeline'     :       answers.improvePlanTimeline || '',
+    'Has Advisor'  :       answers.hasAdvisor          || '',
+    'Reason for Change' :  answers.advisorChangeReason || '',
     'Lives in Canada'  :   answers.livesInCanada       || '',
     'Summary'      :       summary,
   });
@@ -1442,24 +1557,18 @@ function handleContinue() {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: body.toString(),
   })
-  .then(() => goStep(7))
-  .catch(() => goStep(7));
+  .then(() => goStep(8))
+  .catch(() => goStep(8));
 }
 
 function downloadResource(id, pdfUrl, title) {
-  const name  = document.getElementById(id+'-name')?.value.trim();
-  const phone = document.getElementById(id+'-phone')?.value.trim();
   const email = document.getElementById(id+'-email')?.value.trim();
-  const cb    = document.getElementById(id+'-consent');
   const errEl = document.getElementById(id+'-err');
   const btn   = document.querySelector('#lm-' + id + ' .btn-sm');
 
-  if (!name)  { errEl.textContent = 'Please enter your name.'; return; }
-  if (!phone) { errEl.textContent = 'Please enter your phone number.'; return; }
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     errEl.textContent = 'Please enter a valid email address.'; return;
   }
-  if (!cb?.checked) { errEl.textContent = 'Please provide your consent to continue.'; return; }
   errEl.textContent = '';
 
   // Disable button while submitting
@@ -1473,8 +1582,6 @@ function downloadResource(id, pdfUrl, title) {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
       'form-name': 'resource-download',
-      'Name': name,
-      'Phone': phone,
       'Email': email,
       'Resource': title,
     }).toString(),
@@ -1498,7 +1605,7 @@ function downloadResource(id, pdfUrl, title) {
           <p style="font-size:16px;font-weight:700;margin-bottom:6px;">You're all set!</p>
           <p style="font-size:13px;color:rgba(255,255,255,0.60);margin-bottom:20px;">Your download has started. Check your downloads folder.</p>
           <div style="background:rgba(0,133,202,0.12);border:1px solid rgba(0,133,202,0.30);border-radius:12px;padding:16px;margin-bottom:16px;">
-            <p style="font-size:13px;color:rgba(255,255,255,0.80);line-height:1.6;margin-bottom:12px;">While you read through this, I'd love to answer any questions on a quick 15-minute call — no pressure, just honest advice.</p>
+            <p style="font-size:13px;color:rgba(255,255,255,0.80);line-height:1.6;margin-bottom:12px;">While you read through this, I'd love to answer any questions on a quick 15-minute call. No pressure, just honest advice.</p>
             <a href="https://outlook.office.com/bookwithme/user/ea9522b929284ffd98a4a4fe683c082b@ig.ca/meetingtype/mCoYrUaph0OCrItKT38JYA2?anonymous&ismsaljsauthenabled&ep=mcard"
               target="_blank"
               rel="noopener"
@@ -1657,6 +1764,21 @@ document.addEventListener('click', (e) => {
   if (e.target === overlay) closeExit();
 });
 
+/* ─────────────── DROP-OFF TRACKING ─────────────── */
+// Fires once if the visitor leaves mid-quiz (steps 1-6), telling us exactly which question they abandoned on
+let dropOffFired = false;
+function trackDropOff() {
+  if (dropOffFired) return;
+  if (step >= 1 && step <= 6) {
+    dropOffFired = true;
+    const qTitle = QUESTIONS[step - 1] ? QUESTIONS[step - 1].title : 'Unknown';
+    if (typeof gtag !== 'undefined') gtag('event', 'quiz_abandoned', {event_category: 'Funnel', event_label: `Q${step}: ${qTitle}`, question_number: step});
+    if (typeof fbq !== 'undefined') fbq('trackCustom', 'QuizAbandoned', {question_number: step, question_title: qTitle});
+  }
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden) trackDropOff(); });
+window.addEventListener('pagehide', trackDropOff);
+
 /* ─────────────── BOOT ─────────────── */
 render();
 setScarcityText();
@@ -1673,8 +1795,8 @@ initExitIntent();
   <div class="exit-modal">
     <button class="exit-close" onclick="closeExit()">✕</button>
     <div style="font-size:36px;margin-bottom:12px;">⚠️</div>
-    <h3>Wait — Don't Leave Empty-Handed</h3>
-    <p>Most Canadians don't realize how much they're losing each year to inefficient tax strategies and poorly structured investments.<br/><br/>It only takes <strong>2 minutes</strong> to find out where you stand — and the insight could be worth thousands.</p>
+    <h3>Wait, Don't Leave Empty-Handed</h3>
+    <p>Most Canadians don't realize how much they're losing each year to inefficient tax strategies and poorly structured investments.<br/><br/>It only takes <strong>2 minutes</strong> to find out where you stand. The insight could be worth thousands.</p>
     <div class="scarcity-bar" style="margin-bottom:20px;">
       <div class="scarcity-dot"></div>
       <span id="exit-scarcity-text"></span>
