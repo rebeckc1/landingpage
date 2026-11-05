@@ -753,30 +753,14 @@ const REVIEWS = [
   { name: "Eric D.", text: "Curtis was wonderful to talk to, quick to reply to any questions and very knowledgeable. Smart guy with a bright future!" },
 ];
 const QUESTIONS = [
-  {
-    key: 'whatMattersMost',
-    title: 'What matters most to you right now?',
-    type: 'rich',
-    options: [
-      { label: 'Paying less tax',                          sub: "I want to make sure I'm not paying more tax than necessary." },
-      { label: 'Growing my investments',                   sub: 'I want to make sure my portfolio is structured effectively.' },
-      { label: "Making sure I'm on track for retirement",  sub: 'I want confidence that my long-term plan is working.' },
-      { label: 'Getting my whole financial plan organized', sub: 'I want my investments, tax strategy and other financial pieces working together.' },
-      { label: 'Getting a second opinion',                 sub: 'I want another professional perspective on my current strategy.' },
-    ]
-  },
-  {
-    key: 'investedSoFar',
-    title: 'Roughly how much do you currently have invested?',
-    type: 'simple',
-    options: ['Under $250k','$250k - $500k','$500k - $1M','$1M+']
-  },
-  {
-    key: 'hasAdvisor',
-    title: 'Are you currently working with a financial advisor?',
-    type: 'advisor',
-    options: ['Yes','No']
-  },
+ {key:'whatMattersMost',title:'Where do you see the greatest opportunity to improve your financial situation?',type:'rich',options:[
+ {label:'Reducing my overall tax burden',sub:'Making sure my personal and corporate finances are structured tax-efficiently.'},
+ {label:'Growing and protecting my wealth',sub:'Making sure my investments align with my goals and risk tolerance.'},
+ {label:'Planning for retirement or financial independence',sub:'Understanding when I can retire and how to draw income efficiently.'},
+ {label:'Bringing my entire financial picture together',sub:'Coordinating investments, taxes, insurance, estate planning, and business finances.'},
+ {label:'Getting a second opinion',sub:'Finding out whether my current financial strategy could be improved.'}]},
+ {key:'investedSoFar',title:'Approximately how much do you currently have invested?',type:'simple',options:['Under $250,000','$250,000 - $500,000','$500,000 - $1 million','Over $1 million']},
+ {key:'hasAdvisor',title:'Are you currently working with a financial advisor?',type:'advisor',options:['Yes','No']}
 ];
 
 /* State */
@@ -913,8 +897,8 @@ function question(qi){
 
   if(q.type==="rich"){
     var opts=q.options.map(function(o,oi){
-      var isSelected = answers.whatMattersMost === o.label;
-      return "<button class=\"or"+(isSelected?" selected":"")+"\" id=\"opt-"+qi+"-"+oi+"\" onclick=\"selectRich("+qi+","+oi+","+next+")\">" +
+      var isSelected = (Array.isArray(answers.whatMattersMost)?answers.whatMattersMost:(answers.whatMattersMost?[answers.whatMattersMost]:[])).indexOf(o.label)!==-1;
+      return "<button type=\"button\" aria-pressed=\""+(isSelected?"true":"false")+"\" class=\"or"+(isSelected?" selected":"")+"\" id=\"opt-"+qi+"-"+oi+"\" onclick=\"selectRich("+qi+","+oi+","+next+")\">" +
         "<div class=\"or-text\">" +
           "<span class=\"ol\">"+esc(o.label)+"</span>" +
           "<span class=\"os\">"+esc(o.sub)+"</span>" +
@@ -925,7 +909,7 @@ function question(qi){
         "</div>" +
       "</button>";
     }).join("");
-    return "<div class=\"step\">"+navRow+"<h2 class=\"q-title\">"+esc(q.title)+"</h2><p class=\"q-instruction\">Select the option that best reflects your situation.</p><div class=\"opts-rich\">"+opts+"</div></div>";
+    return "<div class=\"step\">"+navRow+"<h2 class=\"q-title\">"+esc(q.title)+"</h2><p class=\"q-instruction\">Select up to two priorities.</p><div class=\"opts-rich\">"+opts+"</div><p class=\"err\" id=\"q1-err\" aria-live=\"polite\"></p><button class=\"btn-cont\" onclick=\"continueRich("+next+")\">Continue &#8594;</button></div>";
   }
 
   if(q.type==="advisor"){
@@ -948,8 +932,8 @@ function question(qi){
       "<p class=\"q-instruction\">Select the option that best reflects your situation.</p>" +
       "<div class=\"opts-2col\">"+aOpts+"</div>" +
       "<div class=\"fu-box\" id=\"fu\" style=\"display:"+(showFu?"block":"none")+";\">" +
-        "<label class=\"fu-lbl\">What has you considering a change or second opinion? <span class=\"fu-opt\">(optional)</span></label>" +
-        "<textarea class=\"fu-ta\" id=\"fu-ta\" placeholder=\"e.g. lack of communication, fees, investment performance, or simply wanting another perspective\">"+esc(savedReason)+"</textarea>" +
+        "<label class=\"fu-lbl\">Is there anything you\u2019d like to improve about your current financial planning? <span class=\"fu-opt\">(optional)</span></label>" +
+        "<textarea class=\"fu-ta\" id=\"fu-ta\" placeholder=\"For example, communication, coordination, or getting a fresh perspective\">"+esc(savedReason)+"</textarea>" +
         "<div class=\"fu-actions\">" +
           "<button class=\"btn-cont\" onclick=\"contAdvisor("+next+")\">Continue &#8594;</button>" +
           "<button class=\"btn-skip\" onclick=\"contAdvisor("+next+")\">Skip</button>" +
@@ -975,14 +959,14 @@ function question(qi){
 /* Form */
 function form(){
   return "<div class=\"step\">" +
-    "<div class=\"fh\"><h2>Almost done.</h2><p>Where should I send your information and follow up?</p></div>" +
+    "<div class=\"fh\"><h2>Let\u2019s See What Opportunities May Be Worth Exploring.</h2><p>Share your contact information and I\u2019ll follow up to discuss your priorities and whether there\u2019s an opportunity to improve your financial plan.</p></div>" +
     "<div class=\"ffields\">" +
       "<div class=\"inp-wrap\"><label class=\"inp-label\" for=\"f-firstname\">First name</label><input class=\"inp\" id=\"f-firstname\" type=\"text\" autocomplete=\"given-name\" oninput=\"formData.firstname=this.value\" /></div>" +
       "<div class=\"inp-wrap\"><label class=\"inp-label\" for=\"f-lastname\">Last name</label><input class=\"inp\" id=\"f-lastname\" type=\"text\" autocomplete=\"family-name\" oninput=\"formData.lastname=this.value\" /></div>" +
       "<div class=\"inp-wrap\"><label class=\"inp-label\" for=\"f-email\">Email</label><input class=\"inp\" id=\"f-email\" type=\"email\" autocomplete=\"email\" oninput=\"formData.email=this.value\" /></div>" +
       "<div class=\"inp-wrap\"><label class=\"inp-label\" for=\"f-phone\">Phone</label><input class=\"inp\" id=\"f-phone\" type=\"tel\" autocomplete=\"tel\" oninput=\"formData.phone=this.value\" /></div>" +
     "</div>" +
-    "<button class=\"btn-sub\" id=\"f-sub\" onclick=\"submitForm()\">Continue &#8594;</button>" +
+    "<button class=\"btn-sub\" id=\"f-sub\" onclick=\"submitForm()\">Submit My Information</button>" +
     consentBox() +
     "<p class=\"err\" id=\"f-err\"></p>" +
   "</div>";
@@ -1058,9 +1042,9 @@ function thanks(){
 /* Actions */
 function goStep(n){
   if(typeof fbq!=="undefined"){
-    if(n===1)fbq("track","InitiateCheckout",{content_name:"Assessment Started"});
-    if(n===4)fbq("track","AddToCart",{content_name:"Questions Complete"});
-    if(n===5)fbq("track","Schedule",{content_name:"Thanks Page Viewed"});
+    if(n===1)fbq("trackCustom","AssessmentStarted",{content_name:"Financial Planning Assessment"});
+    if(n===4)fbq("trackCustom","AssessmentCompleted",{content_name:"Financial Planning Assessment"});
+    if(n===5)fbq("trackCustom","LeadThankYouViewed",{content_name:"Financial Planning Assessment"});
   }
   if(typeof gtag!=="undefined"){
     if(n===1)gtag("event","assessment_started",{event_category:"Funnel"});
@@ -1080,7 +1064,23 @@ function flash(qi,oi,cls){
   var b=document.getElementById("opt-"+qi+"-"+oi);
   if(b)b.classList.add(cls);
 }
-function selectRich(qi,oi,next){flash(qi,oi,"selected");answers.whatMattersMost=QUESTIONS[qi].options[oi].label;setTimeout(function(){goStep(next);},250);}
+function selectRich(qi,oi,next){
+ var label=QUESTIONS[qi].options[oi].label;
+ var selected=Array.isArray(answers.whatMattersMost)?answers.whatMattersMost.slice():(answers.whatMattersMost?[answers.whatMattersMost]:[]);
+ var idx=selected.indexOf(label);
+ if(idx!==-1)selected.splice(idx,1);
+ else if(selected.length<2)selected.push(label);
+ else{var err=document.getElementById("q1-err");if(err)err.textContent="Please select no more than two priorities.";return;}
+ answers.whatMattersMost=selected;
+ var el=document.getElementById("opt-"+qi+"-"+oi);
+ if(el){el.classList.toggle("selected",selected.indexOf(label)!==-1);el.setAttribute("aria-pressed",selected.indexOf(label)!==-1?"true":"false");}
+ var err=document.getElementById("q1-err");if(err)err.textContent="";
+ saveProgress();
+}
+function continueRich(next){
+ if(!Array.isArray(answers.whatMattersMost)||!answers.whatMattersMost.length){var err=document.getElementById("q1-err");if(err)err.textContent="Please select at least one priority.";return;}
+ goStep(next);
+}
 function selectSimple(qi,oi,next){flash(qi,oi,"selected");var q=QUESTIONS[qi];answers[q.key]=q.options[oi];setTimeout(function(){goStep(next);},250);}
 function selectAdvisor(qi,oi,val,next){
   flash(qi,oi,"selected");answers.hasAdvisor=val;
@@ -1111,10 +1111,7 @@ function submitForm(){
   var btn=document.getElementById("f-sub");
   if(btn){btn.textContent="Submitting...";btn.disabled=true;}
 
-  if(typeof fbq!=="undefined")fbq("track","Lead",{content_name:"Contact Form Submitted"});
-  if(typeof gtag!=="undefined")gtag("event","generate_lead",{event_category:"Funnel"});
-
-  var summary="What Matters Most: "+(answers.whatMattersMost||"Not answered")+" | Invested So Far: "+(answers.investedSoFar||"Not answered")+" | Has Advisor: "+(answers.hasAdvisor||"Not answered")+" | Reason: "+(answers.advisorChangeReason||"N/A");
+  var summary="What Matters Most: "+(Array.isArray(answers.whatMattersMost)?answers.whatMattersMost.join("; "):(answers.whatMattersMost||"Not answered"))+" | Invested So Far: "+(answers.investedSoFar||"Not answered")+" | Has Advisor: "+(answers.hasAdvisor||"Not answered")+" | Reason: "+(answers.advisorChangeReason||"N/A");
 
   fetch("/",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},
     body:new URLSearchParams({
@@ -1123,21 +1120,29 @@ function submitForm(){
       "Last Name":formData.lastname,
       "Email":formData.email,
       "Phone":formData.phone,
-      "What Matters Most":answers.whatMattersMost||"",
+      "What Matters Most":Array.isArray(answers.whatMattersMost)?answers.whatMattersMost.join("; "):(answers.whatMattersMost||""),
       "Invested So Far":answers.investedSoFar||"",
       "Has Advisor":answers.hasAdvisor||"",
       "Reason for Change":answers.advisorChangeReason||"",
       "Summary":summary
     }).toString()
-  }).then(function(){goStep(5);}).catch(function(){goStep(5);});
+  }).then(function(response){
+ if(!response.ok)throw new Error("Form submission failed");
+ if(typeof fbq!=="undefined")fbq("track","Lead",{content_name:"Contact Form Submitted"});
+ if(typeof gtag!=="undefined")gtag("event","generate_lead",{event_category:"Funnel"});
+ goStep(5);
+}).catch(function(){
+ if(err)err.textContent="Your information could not be submitted. Please try again.";
+ if(btn){btn.disabled=false;btn.textContent="Submit My Information";}
+});
 }
 
 /* Service icon shortcuts */
 function svcShortcut(type){
   var q1Map = {
-    "investments": "Growing my investments",
-    "retirement":  "Making sure I'm on track for retirement",
-    "tax":         "Paying less tax"
+    "investments": "Growing and protecting my wealth",
+    "retirement":  "Planning for retirement or financial independence",
+    "tax":         "Reducing my overall tax burden"
   };
   if(type==="insurance"){
     // No clean Q1 mapping — send to Q1 normally
@@ -1148,7 +1153,7 @@ function svcShortcut(type){
   var label = q1Map[type];
   if(!label) return;
   // Store as if they answered Q1
-  answers.whatMattersMost = label;
+  answers.whatMattersMost = [label];
   saveProgress();
   // GA tracking
   var evtMap = {
