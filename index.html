@@ -1252,8 +1252,9 @@ function trackDropOff(){
 document.addEventListener("visibilitychange",function(){if(document.hidden)trackDropOff();});
 window.addEventListener("pagehide",trackDropOff);
 
-/* Boot */
-loadProgress();
+/* Boot: always begin at the homepage after a reload. */
+clearProgress();
+step=0;
 render();
 </script>
 </body>
